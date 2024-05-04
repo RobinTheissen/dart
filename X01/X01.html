@@ -5,14 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DOM</title>
     <script src="/dart/X01/X01.js"></script>
+    <link rel="stylesheet" href="X01.css">
 </head>
 <body>
-    <form action="points.html" onsubmit="submitForm(event)">
+    <form onsubmit="submitForm(event)">
+        <h3>Punktzahl</h3>
         <select name="points" id="points">
             <option id="mode170" value="170">170</option>
             <option id="mode301" value="301">301</option>
             <option id="mode501" value="501">501</option>
+            <option id="mode701" value="701">701</option>
         </select>
+        <h3>Legs</h3>
         <select name="legs" id="legs">
             <option id="oneLeg" value="1">1</option>
             <option id="twoLeg" value="2">2</option>
@@ -25,10 +29,16 @@
             <option id="nineLeg" value="9">9</option>
             <option id="tenLeg" value="10">10</option>
         </select>
+        <h3>Out Optionen</h3>
         <select name="out" id="out">
             <option id="doubleOut" value="doubleOut">double out</option>
             <option id="singleOut" value="singleOut">single out</option>
-            <option id="singleOut" value="singleOut">single out</option>
+            <option id="masterOut" value="masterOut">master out</option>
+        </select>
+        <h3>Regeln</h3>
+        <select name="rules" id="rules">
+            <option id="firstTo" value="firstTo">first to</option>
+            <option id="bestOf" value="bestOf">best of</option>
         </select>
         <button type="submit">Absenden</button>
     </form>

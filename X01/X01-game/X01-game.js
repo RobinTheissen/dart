@@ -1,7 +1,9 @@
+let selectedOptions = JSON.parse(localStorage.getItem('selectedOptions'));
+let doubleMode = false
+let tripleMode = false
+
 function calculatePoints(points) {
-    let selectedOptions = JSON.parse(localStorage.getItem('selectedOptions'));
-    console.log(typeof selectedOptions.points)
-    if (typeof selectedOptions.points === 'number') {
+    if (selectedOptions.points - points >= 0) {
         selectedOptions.points -= points;
         localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
         console.log(selectedOptions);
