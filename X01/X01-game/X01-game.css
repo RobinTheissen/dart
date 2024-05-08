@@ -1,0 +1,59 @@
+/* Globale Stile */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    padding: 20px;
+}
+
+.container {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.form-container {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Dart Scoreboard Stile */
+.calculator {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.calculator th {
+    padding: 10px;
+    text-align: center;
+}
+
+.calculator button {
+    width: 80px;
+    height: 80px;
+    padding: 12px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.calculator button:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 600px) {
+    .calculator button {
+        width: 60px;
+        height: 60px;
+    }
+}

@@ -3,41 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>points</title>
-    <script src="/dart/X01/X01-game/X01-game.js"></script>
+    <title>scoreboard</title>
+    <link rel="stylesheet" href="X01-game.css">
+    <script src="X01-game.js"></script>
 </head>
 <body>
-    <table border="1">
-        <tr>
-            <th><button>1</button></th>
-            <th><button>2</button></th>
-            <th><button>3</button></th>
-        </tr>
-        <tr>
-            <th><button>4</button></th>
-            <th><button>5</button></th>
-            <th><button>6</button></th>
-        </tr>
-        <tr>
-            <th><button>7</button></th>
-            <th><button>8</button></th>
-            <th><button>9</button></th>
-        </tr>
-        <tr>
-            <th><button>10</button></th>
-            <th><button>11</button></th>
-            <th><button>12</button></th>
-        </tr>
-        <tr>
-            <th><button>13</button></th>
-            <th><button>14</button></th>
-            <th><button>15</button></th>
-        </tr>
-        <tr>
-            <th><button>1</button></th>
-            <th><button>2</button></th>
-            <th><button>3</button></th>
-        </tr>
-    </table>
+    <div class="container">
+        <div class="form-container">
+            <form id="scoreboardForm">
+                <table class="calculator">
+                    <tr>
+                        <th><p class="restScore">Rest: 501</p></th>
+                    </tr>
+                </table>
+                <table class="calculator">
+                    <tr>
+                        <th><p class="firstThrow"></p></th>
+                        <th><p class="secondThrow"></p></th>
+                        <th><p class="thirdThrow"></p></th>
+                        <th><p class="calculatedPoints"></p></th>
+                    </tr>
+                </table>
+                <table class="calculator">
+                    <tr>
+                        <th><button onclick="calculatePoints(1)">1</button></th>
+                        <th><button onclick="calculatePoints(2)">2</button></th>
+                        <th><button onclick="calculatePoints(3)">3</button></th>
+                        <th><button onclick="calculatePoints(4)">4</button></th>
+                    </tr>
+                    <tr>
+                        <th><button onclick="calculatePoints(5)">5</button></th>
+                        <th><button onclick="calculatePoints(6)">6</button></th>
+                        <th><button onclick="calculatePoints(7)">7</button></th>
+                        <th><button onclick="calculatePoints(8)">8</button></th>
+                    </tr>
+                    <tr>
+                        <th><button onclick="calculatePoints(9)">9</button></th>
+                        <th><button onclick="calculatePoints(10)">10</button></th>
+                        <th><button onclick="calculatePoints(11)">11</button></th>
+                        <th><button onclick="calculatePoints(12)">12</button></th>
+                    </tr>
+                    <tr>
+                        <th><button onclick="calculatePoints(13)">13</button></th>
+                        <th><button onclick="calculatePoints(14)">14</button></th>
+                        <th><button onclick="calculatePoints(15)">15</button></th>
+                        <th><button onclick="calculatePoints(16)">16</button></th>
+                    </tr>
+                    <tr>
+                        <th><button onclick="calculatePoints(17)">17</button></th>
+                        <th><button onclick="calculatePoints(18)">18</button></th>
+                        <th><button onclick="calculatePoints(19)">19</button></th>
+                        <th><button onclick="calculatePoints(20)">20</button></th>
+                    </tr>
+                    <tr>
+                        <th><button onclick="calculatePoints(0)">OUT</button></th>
+                        <th><button>SB</button></th>
+                        <th><button>D</button></th>
+                        <th><button>T</button></th>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
