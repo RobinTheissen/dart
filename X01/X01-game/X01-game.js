@@ -26,6 +26,20 @@ function updateRestScore() {
 }
 
 // Funktion zum Behandeln des Formular-Ereignisses
+
+
+function changeMode(points){
+    if(points === 'D'){
+        doubleMode = true;
+        tripleMode = false;
+        console.log('double aktivated')
+    } else if(points === 'T') {
+        tripleMode = true;
+        doubleMode = false;
+        console.log('triple aktivated')
+    }
+}
+
 function handleFormSubmission(event) {
     event.preventDefault();
 }
@@ -35,11 +49,32 @@ function calculatePoints(points) {
 
     document.getElementById('scoreboardForm').addEventListener('submit', handleFormSubmission);
 
-    if (selectedOptions.points - points >= 0) {
-        totalPoints += points;
-        selectedOptions.points -= points;
-        localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
-        console.log(selectedOptions);
+    changeMode(points);
+
+    if (selectedOptions.points - points > 0) {
+        if(doubleMode === true){
+            points = points * 2
+            totalPoints += points
+            selectedOptions.points -= points
+            localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
+            console.log(selectedOptions);
+            doubleMode = false
+        }
+        else if(tripleMode === true){
+            points = points * 3
+            totalPoints += points
+            selectedOptions.points -= points
+            localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
+            console.log(selectedOptions);
+            tripleMode = false
+        }
+        else{
+            totalPoints += points
+            selectedOptions.points -= points
+            localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
+            console.log(selectedOptions);
+        }
+        
         if (throws === 3) {
             throws = 1; // Reset für neue Eingaben
             document.querySelector('.firstThrow').innerHTML = ``;
@@ -56,6 +91,4 @@ function calculatePoints(points) {
     updateThrowsDisplay(points);
     updateRestScore();
 }
-
-// Event-Listener für das Formular-Ereignis
 
