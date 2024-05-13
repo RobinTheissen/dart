@@ -4,6 +4,10 @@ let tripleMode = false;
 let throws = 0;
 let totalPoints = 0
 
+function handleFormSubmission(event) {
+    event.preventDefault();
+}
+
 // Funktion zum Aktualisieren der Anzeige der Würfe
 function updateThrowsDisplay(points) {
     if (throws === 1){
@@ -29,6 +33,9 @@ function updateRestScore() {
 
 
 function changeMode(points){
+
+    document.getElementById('scoreboardForm').addEventListener('submit', handleFormSubmission);
+
     if(points === 'D'){
         doubleMode = true;
         tripleMode = false;
@@ -40,9 +47,6 @@ function changeMode(points){
     }
 }
 
-function handleFormSubmission(event) {
-    event.preventDefault();
-}
 
 // Hauptfunktion zum Berechnen der Punkte
 function calculatePoints(points) {
@@ -60,7 +64,7 @@ function calculatePoints(points) {
             console.log(selectedOptions);
             doubleMode = false
         }
-        else if(tripleMode === true){
+        else if(tripleMode === true && points < 21){
             points = points * 3
             totalPoints += points
             selectedOptions.points -= points
@@ -68,11 +72,16 @@ function calculatePoints(points) {
             console.log(selectedOptions);
             tripleMode = false
         }
-        else{
+        else if(points < 21){
             totalPoints += points
             selectedOptions.points -= points
             localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
             console.log(selectedOptions);
+        }
+        else{
+            console.log('Triple SB nicht möglich!')
+            doubleMode = false
+            tripleMode = false
         }
         
         if (throws === 3) {
@@ -85,10 +94,14 @@ function calculatePoints(points) {
             throws++;
         }
     } else {
-        console.error('Ungültiger Wert für Punkte.');
+        console.error('Überworfen');
     }
 
     updateThrowsDisplay(points);
     updateRestScore();
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    // Anzeige der Restpunkte beim Laden der Seite
+    document.querySelector('.restScore').innerHTML = `Rest: ${selectedOptions.points}`;
+});
