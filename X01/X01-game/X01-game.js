@@ -24,7 +24,7 @@ function updateRestScore() {
     if(selectedOptions.points > 0){
         document.querySelector('.calculatedPoints').innerHTML = `${totalPoints}`;
         document.querySelector('.restScore').innerHTML = `Rest: ${selectedOptions.points}`;
-    } else {
+    } else if (selectedOptions.points === 0){
         document.querySelector('.calculatedPoints').innerHTML = `Gewonnen`;
     }
 }
@@ -56,27 +56,31 @@ function calculatePoints(points) {
     changeMode(points);
 
     if (selectedOptions.points - points > 0) {
-        if(doubleMode === true){
+        if(doubleMode === true && tripleMode === false){
             points = points * 2
             totalPoints += points
             selectedOptions.points -= points
             localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
             console.log(selectedOptions);
             doubleMode = false
+            tripleMode = false
         }
-        else if(tripleMode === true && points < 21){
+        else if(tripleMode === true && doubleMode === false){
             points = points * 3
             totalPoints += points
             selectedOptions.points -= points
             localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
             console.log(selectedOptions);
             tripleMode = false
+            doubleMode = false
         }
-        else if(points < 21){
+        else if(tripleMode === false && doubleMode === false){
             totalPoints += points
             selectedOptions.points -= points
             localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
             console.log(selectedOptions);
+            tripleMode = false
+            doubleMode = false
         }
         else{
             console.log('Triple SB nicht möglich!')
@@ -93,8 +97,15 @@ function calculatePoints(points) {
         } else {
             throws++;
         }
-    } else {
-        console.error('Überworfen');
+    } else if(selectedOptions.points - points === 0) {
+        selectedOptions.points -= points
+        document.querySelector('.restScore').innerHTML = `Rest: ${selectedOptions.points}`;
+        localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
+        document.querySelector('.firstThrow').innerHTML = ``;
+        document.querySelector('.secondThrow').innerHTML = ``;
+        document.querySelector('.thirdThrow').innerHTML = ``;
+        console.log(selectedOptions);
+        console.log('Gewonnen');
     }
 
     updateThrowsDisplay(points);
