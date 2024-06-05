@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>scoreboard</title>
     <link rel="stylesheet" href="X01-game.css">
-    <script src="X01-game.js"></script>
+    <script defer src="X01-game.js"></script> <!-- Add defer to ensure script runs after HTML is parsed -->
 </head>
 <body>
     <div class="container">
@@ -26,40 +26,40 @@
                 </table>
                 <table class="calculator">
                     <tr>
-                        <th><button onclick="calculatePoints(1)">1</button></th>
-                        <th><button onclick="calculatePoints(2)">2</button></th>
-                        <th><button onclick="calculatePoints(3)">3</button></th>
-                        <th><button onclick="calculatePoints(4)">4</button></th>
+                        <th><button data-points="1">1</button></th>
+                        <th><button data-points="2">2</button></th>
+                        <th><button data-points="3">3</button></th>
+                        <th><button data-points="4">4</button></th>
                     </tr>
                     <tr>
-                        <th><button onclick="calculatePoints(5)">5</button></th>
-                        <th><button onclick="calculatePoints(6)">6</button></th>
-                        <th><button onclick="calculatePoints(7)">7</button></th>
-                        <th><button onclick="calculatePoints(8)">8</button></th>
+                        <th><button data-points="5">5</button></th>
+                        <th><button data-points="6">6</button></th>
+                        <th><button data-points="7">7</button></th>
+                        <th><button data-points="8">8</button></th>
                     </tr>
                     <tr>
-                        <th><button onclick="calculatePoints(9)">9</button></th>
-                        <th><button onclick="calculatePoints(10)">10</button></th>
-                        <th><button onclick="calculatePoints(11)">11</button></th>
-                        <th><button onclick="calculatePoints(12)">12</button></th>
+                        <th><button data-points="9">9</button></th>
+                        <th><button data-points="10">10</button></th>
+                        <th><button data-points="11">11</button></th>
+                        <th><button data-points="12">12</button></th>
                     </tr>
                     <tr>
-                        <th><button onclick="calculatePoints(13)">13</button></th>
-                        <th><button onclick="calculatePoints(14)">14</button></th>
-                        <th><button onclick="calculatePoints(15)">15</button></th>
-                        <th><button onclick="calculatePoints(16)">16</button></th>
+                        <th><button data-points="13">13</button></th>
+                        <th><button data-points="14">14</button></th>
+                        <th><button data-points="15">15</button></th>
+                        <th><button data-points="16">16</button></th>
                     </tr>
                     <tr>
-                        <th><button onclick="calculatePoints(17)">17</button></th>
-                        <th><button onclick="calculatePoints(18)">18</button></th>
-                        <th><button onclick="calculatePoints(19)">19</button></th>
-                        <th><button onclick="calculatePoints(20)">20</button></th>
+                        <th><button data-points="17">17</button></th>
+                        <th><button data-points="18">18</button></th>
+                        <th><button data-points="19">19</button></th>
+                        <th><button data-points="20">20</button></th>
                     </tr>
                     <tr>
-                        <th><button onclick="calculatePoints(0)">OUT</button></th>
-                        <th><button onclick="calculatePoints(25)">SB</button></th>
-                        <th><button onclick="changeMode('D')">D</button></th>
-                        <th><button onclick="changeMode('T')">T</button></th>
+                        <th><button data-points="0">OUT</button></th>
+                        <th><button data-points="25">SB</button></th>
+                        <th><button data-mode="D">D</button></th>
+                        <th><button data-mode="T">T</button></th>
                     </tr>
                 </table>
             </form>

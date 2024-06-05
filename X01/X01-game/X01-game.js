@@ -1,194 +1,106 @@
-let selectedOptions = JSON.parse(localStorage.getItem('selectedOptions'));
-let doubleMode = false;
-let tripleMode = false;
-let throws = 0;
-let totalPoints = 0
+document.addEventListener('DOMContentLoaded', () => {
+    let selectedOptions = JSON.parse(localStorage.getItem('selectedOptions'));
+    let doubleMode = false;
+    let tripleMode = false;
+    let throws = 0;
+    let totalPoints = 0;
 
-function handleFormSubmission(event) {
-    event.preventDefault();
-}
+    const restScoreElement = document.querySelector('.restScore');
+    const calculatedPointsElement = document.querySelector('.calculatedPoints');
+    const firstThrowElement = document.querySelector('.firstThrow');
+    const secondThrowElement = document.querySelector('.secondThrow');
+    const thirdThrowElement = document.querySelector('.thirdThrow');
 
-function throwHandler(){
-    if (throws === 3) {
-        throws = 1; // Reset für neue Eingaben
-        document.querySelector('.firstThrow').innerHTML = ``;
-        document.querySelector('.secondThrow').innerHTML = ``;
-        document.querySelector('.thirdThrow').innerHTML = ``;
-    } else {
+    document.getElementById('scoreboardForm').addEventListener('submit', handleFormSubmission);
+
+    function handleFormSubmission(event) {
+        event.preventDefault();
+    }
+
+    function throwHandler() {
+        if (throws === 3) {
+            throws = 0; // Reset throws to 0 so that the next increment starts from 1
+            totalPoints = 0; // Reset total points after the third throw
+            clearThrowsDisplay();
+            updateRestScore(); // Update the display to show the reset points
+        }
         throws++;
     }
-}
 
-// Funktion zum Aktualisieren der Anzeige der Würfe
-function updateThrowsDisplay(points) {
-    if (throws === 1){
-        document.querySelector('.firstThrow').innerHTML = `${points}`;
-    } else if (throws === 2){
-        document.querySelector('.secondThrow').innerHTML = `${points}`;
-    } else if (throws === 3){
-        document.querySelector('.thirdThrow').innerHTML = `${points}`;
+    function clearThrowsDisplay() {
+        firstThrowElement.innerHTML = ``;
+        secondThrowElement.innerHTML = ``;
+        thirdThrowElement.innerHTML = ``;
     }
-}
 
-// Funktion zum Aktualisieren des Restpunkte-Zählers
-function updateRestScore() {
-    if(selectedOptions.points > 0){
-        document.querySelector('.calculatedPoints').innerHTML = `${totalPoints}`;
-        document.querySelector('.restScore').innerHTML = `Rest: ${selectedOptions.points}`;
-    } else if (selectedOptions.points === 0){
-        document.querySelector('.calculatedPoints').innerHTML = `Gewonnen`;
-        document.querySelector('.restScore').innerHTML = ``;
-        document.querySelector('.firstThrow').innerHTML = ``;
-        document.querySelector('.secondThrow').innerHTML = ``;
-        document.querySelector('.thirdThrow').innerHTML = ``;
+    function updateThrowsDisplay(points) {
+        if (throws === 1) {
+            firstThrowElement.innerHTML = `${points}`;
+        } else if (throws === 2) {
+            secondThrowElement.innerHTML = `${points}`;
+        } else if (throws === 3) {
+            thirdThrowElement.innerHTML = `${points}`;
+        }
     }
-}
 
-// Funktion zum Behandeln des Formular-Ereignisses
-
-
-function changeMode(points){
-
-    document.getElementById('scoreboardForm').addEventListener('submit', handleFormSubmission);
-
-    if(points === 'D'){
-        doubleMode = true;
-        tripleMode = false;
-        console.log('double aktivated')
-    } else if(points === 'T') {
-        tripleMode = true;
-        doubleMode = false;
-        console.log('triple aktivated')
+    function updateRestScore() {
+        if (selectedOptions.points > 0) {
+            calculatedPointsElement.innerHTML = `${totalPoints}`;
+            restScoreElement.innerHTML = `Rest: ${selectedOptions.points}`;
+        } else if (selectedOptions.points === 0) {
+            calculatedPointsElement.innerHTML = `Gewonnen`;
+            restScoreElement.innerHTML = ``;
+            clearThrowsDisplay();
+        }
     }
-}
 
+    window.changeMode = function(mode) { // Globally expose changeMode
+        if (mode === 'D') {
+            doubleMode = true;
+            tripleMode = false;
+        } else if (mode === 'T') {
+            tripleMode = true;
+            doubleMode = false;
+        }
+    };
 
-// Hauptfunktion zum Berechnen der Punkte
-function calculatePoints(points) {
+    window.calculatePoints = function(points) { // Globally expose calculatePoints
+        let modifiedPoints = points;
 
-    document.getElementById('scoreboardForm').addEventListener('submit', handleFormSubmission);
+        if (doubleMode) {
+            modifiedPoints *= 2;
+        } else if (tripleMode) {
+            modifiedPoints *= 3;
+        }
 
-    let doubledPoints = points * 2
-    let tripledPoints = points * 3
-
-    changeMode(points);
-    
-    if (selectedOptions.points - points > 0) {
-        if(doubleMode === true && selectedOptions.points - doubledPoints > 0){
+        if (selectedOptions.points - modifiedPoints >= 0) {
             throwHandler();
-            points = doubledPoints
-            totalPoints += points
-            selectedOptions.points -= points
+            totalPoints += modifiedPoints;
+            selectedOptions.points -= modifiedPoints;
             localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
-            console.log(selectedOptions);
-            doubleMode = false
-            tripleMode = false
-            console.log(throws)
-            updateThrowsDisplay(points);
-            console.log(points)
-            console.log(doubledPoints)
-            console.log(tripledPoints)
-            console.log(selectedOptions.points)
-            console.log('1')
+            
+            updateThrowsDisplay(modifiedPoints);
+            updateRestScore();
+            doubleMode = false;
+            tripleMode = false;
+        } else {
+            console.log('überworfen');
         }
-        else if(tripleMode === true && selectedOptions.points - tripledPoints > 0){
-            throwHandler();
-            points = tripledPoints
-            totalPoints += points
-            selectedOptions.points -= points
-            localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
-            console.log(selectedOptions);
-            tripleMode = false
-            doubleMode = false
-            console.log(throws)
-            updateThrowsDisplay(points);
-            console.log(points)
-            console.log(doubledPoints)
-            console.log(tripledPoints)
-            console.log(selectedOptions.points)
-            console.log('2')
-        }
-        else if(selectedOptions.points - points > 0){
-            throwHandler();
-            totalPoints += points
-            selectedOptions.points -= points
-            localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
-            console.log(selectedOptions);
-            tripleMode = false
-            doubleMode = false
-            console.log(throws)
-            updateThrowsDisplay(points);
-            console.log(points)
-            console.log(doubledPoints)
-            console.log(tripledPoints)
-            console.log(selectedOptions.points)
-            console.log('3')
-        }
-        else{
-            console.log('error bei restpunkten')
-            doubleMode = false
-            tripleMode = false
-            console.log(throws)
-        }
-        
-       
-    }else if(doubleMode === true && selectedOptions.points - doubledPoints === 0) {
-        points = doubledPoints
-        totalPoints += points
-        selectedOptions.points -= points
-        localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
-        console.log(selectedOptions);
-        doubleMode = false
-        tripleMode = false
-        updateThrowsDisplay(points);
-        console.log(points)
-            console.log(doubledPoints)
-            console.log(tripledPoints)
-            console.log(selectedOptions.points)
-            console.log('4')
-    }
-    else if(tripleMode === true && selectedOptions.points - tripledPoints === 0){
-        points = tripledPoints
-        totalPoints += points
-        selectedOptions.points -= points
-        localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
-        console.log(selectedOptions);
-        tripleMode = false
-        doubleMode = false
-        updateThrowsDisplay(points);
-        console.log(points)
-            console.log(doubledPoints)
-            console.log(tripledPoints)
-            console.log(selectedOptions.points)
-            console.log('5')
-    }
-    else if(selectedOptions.points - points === 0){
-        totalPoints += points
-        selectedOptions.points -= points
-        localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
-        console.log(selectedOptions);
-        tripleMode = false
-        doubleMode = false
-        updateThrowsDisplay(points);
-        console.log(points)
-            console.log(doubledPoints)
-            console.log(tripledPoints)
-            console.log(selectedOptions.points)
-            console.log('6')
-        }
-    else{
-        console.log('überworfen')
-        doubleMode = false
-        tripleMode = false
-        updateThrowsDisplay(points);
-        console.log(throws)
-    }
+    };
 
-    
-    updateRestScore();
-}
+    restScoreElement.innerHTML = `Rest: ${selectedOptions.points}`;
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Anzeige der Restpunkte beim Laden der Seite
-    document.querySelector('.restScore').innerHTML = `Rest: ${selectedOptions.points}`;
+    document.querySelectorAll('.calculator button').forEach(button => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            const points = event.target.getAttribute('data-points');
+            const mode = event.target.getAttribute('data-mode');
+
+            if (mode) {
+                changeMode(mode);
+            } else if (points !== null) {
+                calculatePoints(Number(points));
+            }
+        });
+    });
 });
