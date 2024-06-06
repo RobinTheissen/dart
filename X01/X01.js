@@ -14,6 +14,7 @@ function submitForm(event) {
     let selectedRules = rulesSelect.value
     
     selectedOptions = {
+        initialPoints: selectedPoints,
         points: selectedPoints,
         legs: selectedLegs,
         out: selectedOut,

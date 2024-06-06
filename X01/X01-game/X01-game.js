@@ -43,14 +43,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function updateLegs() {
+        const winAudio = document.getElementById('winSound')
+        selectedOptions.legs --
+        if (selectedOptions.legs === 0){
+            winAudio.play()
+            setTimeout(() => {
+                window.history.back();
+            }, 300); 
+        } else {
+            totalPoints = 0
+            selectedOptions.points = selectedOptions.initialPoints
+            restScoreElement.innerHTML = `Rest: ${selectedOptions.points}`;
+            winAudio.play()
+        }
+    }
+
     function updateRestScore() {
         if (selectedOptions.points > 0) {
             calculatedPointsElement.innerHTML = `${totalPoints}`;
             restScoreElement.innerHTML = `Rest: ${selectedOptions.points}`;
         } else if (selectedOptions.points === 0) {
-            calculatedPointsElement.innerHTML = `Gewonnen`;
             restScoreElement.innerHTML = ``;
             clearThrowsDisplay();
+            console.log(selectedOptions)
+            updateLegs()
+            calculatedPointsElement.innerHTML = ''
         }
     }
 
@@ -83,8 +101,11 @@ document.addEventListener('DOMContentLoaded', () => {
             updateRestScore();
             doubleMode = false;
             tripleMode = false;
+            console.log(selectedOptions)
         } else {
             console.log('überworfen');
+            const audio = document.getElementById('überworfenSound')
+            audio.play()
         }
     };
 
