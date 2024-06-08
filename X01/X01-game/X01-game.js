@@ -46,11 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateLegs() {
         const winAudio = document.getElementById('winSound')
         selectedOptions.legs --
+
         if (selectedOptions.legs === 0){
             winAudio.play()
             setTimeout(() => {
                 window.history.back();
-            }, 300); 
+            }, 600); 
         } else {
             totalPoints = 0
             selectedOptions.points = selectedOptions.initialPoints
@@ -91,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modifiedPoints *= 3;
         }
 
-        if (selectedOptions.points - modifiedPoints >= 0) {
+        if (selectedOptions.points - modifiedPoints > 1) {
             throwHandler();
             totalPoints += modifiedPoints;
             selectedOptions.points -= modifiedPoints;
@@ -102,10 +103,79 @@ document.addEventListener('DOMContentLoaded', () => {
             doubleMode = false;
             tripleMode = false;
             console.log(selectedOptions)
+        } else if (selectedOptions.points - modifiedPoints === 0 && selectedOptions.out === 'singleOut') {
+            throwHandler();
+            totalPoints += modifiedPoints;
+            selectedOptions.points -= modifiedPoints;
+            localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
+            
+            updateThrowsDisplay(modifiedPoints);
+            updateRestScore();
+            doubleMode = false;
+            tripleMode = false;
+            console.log(selectedOptions)
+        } else if (selectedOptions.points - modifiedPoints === 0 && selectedOptions.out === 'doubleOut') {
+            if(doubleMode){
+                throwHandler();
+                totalPoints += modifiedPoints;
+                selectedOptions.points -= modifiedPoints;
+                localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
+                
+                updateThrowsDisplay(modifiedPoints);
+                updateRestScore();
+                doubleMode = false;
+                tripleMode = false;
+                console.log(selectedOptions)
+            }
+            else {
+                points = 0
+                console.log('überworfen');
+                const audio = document.getElementById('überworfenSound')
+                audio.play()
+                throwHandler()
+                selectedOptions.points -= 0;
+                updateThrowsDisplay(points);
+                updateRestScore();
+                doubleMode = false;
+                tripleMode = false;
+            }
+        }
+        else if (selectedOptions.points - modifiedPoints === 0 && selectedOptions.out === 'masterOut') {
+            if(tripleMode){
+                throwHandler();
+                totalPoints += modifiedPoints;
+                selectedOptions.points -= modifiedPoints;
+                localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
+                
+                updateThrowsDisplay(modifiedPoints);
+                updateRestScore();
+                doubleMode = false;
+                tripleMode = false;
+                console.log(selectedOptions)
+            }
+            else {
+                points = 0
+                console.log('überworfen');
+                const audio = document.getElementById('überworfenSound')
+                audio.play()
+                throwHandler()
+                selectedOptions.points -= 0;
+                updateThrowsDisplay(points);
+                updateRestScore();
+                doubleMode = false;
+                tripleMode = false;
+            }
         } else {
+            points = 0
             console.log('überworfen');
             const audio = document.getElementById('überworfenSound')
             audio.play()
+            throwHandler()
+            selectedOptions.points -= 0;
+            updateThrowsDisplay(points);
+            updateRestScore();
+            doubleMode = false;
+            tripleMode = false;
         }
     };
 
