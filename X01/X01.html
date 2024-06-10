@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="X01.css">
 </head>
 <body>
-    <form onsubmit="submitForm(event)">
+    <form id="settingsForm">
+        <h3>Einstellungen</h3>
+        
         <h3>Punktzahl</h3>
         <select name="points" id="points">
             <option id="mode170" value="170">170</option>
@@ -40,8 +42,16 @@
             <option id="firstTo" value="firstTo">first to</option>
             <option id="bestOf" value="bestOf">best of</option>
         </select>
+
+        <div id="playersContainer">
+            <div class="player">
+                <input type="text" name="player1" placeholder="Spieler 1" >
+                <button type="button" id="addPlayerBtn">+</button>
+            </div>
+        </div>
+    <br/>
+    <br/>
         <button type="submit">Absenden</button>
     </form>
-    
 </body>
 </html>

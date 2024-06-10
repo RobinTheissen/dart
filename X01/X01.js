@@ -1,24 +1,41 @@
-let selectedOptions = {}; // Externe Variable zur Speicherung der ausgewählten Optionen
+document.addEventListener('DOMContentLoaded', () => {
+    const addPlayerBtn = document.getElementById('addPlayerBtn');
+    const playersContainer = document.getElementById('playersContainer');
+    let playerCount = 1; // Start mit einem Spieler
+
+    // Überprüfen, ob der Eventlistener bereits vorhanden ist, bevor er hinzugefügt wird
+    if (addPlayerBtn) {
+        addPlayerBtn.addEventListener('click', addPlayer);
+    }
+
+    function addPlayer() {
+        playerCount++;
+        const newPlayerInput = document.createElement('div');
+        newPlayerInput.classList.add('player');
+        newPlayerInput.innerHTML = `
+            <input type="text" name="player${playerCount}" placeholder="Spieler ${playerCount}">
+        `;
+        playersContainer.appendChild(newPlayerInput);
+    }
+
+    document.getElementById('settingsForm').addEventListener('submit', submitForm);
+});
 
 function submitForm(event) {
-    event.preventDefault(); // Das Standardverhalten des Formulars verhindern
+    event.preventDefault();
 
-    let pointsSelect = document.getElementById('points');
-    let legsSelect = document.getElementById('legs');
-    let outSelect = document.getElementById('out');
-    let rulesSelect = document.getElementById('rules')
+    const players = [];
+    document.querySelectorAll('#playersContainer input').forEach(input => {
+        players.push(input.value.trim());
+    });
 
-    let selectedPoints = parseInt(pointsSelect.value);
-    let selectedLegs = parseInt(legsSelect.value);
-    let selectedOut = outSelect.value;
-    let selectedRules = rulesSelect.value
-    
-    selectedOptions = {
-        initialPoints: selectedPoints,
-        points: selectedPoints,
-        legs: selectedLegs,
-        out: selectedOut,
-        rules: selectedRules
+    const selectedOptions = {
+        players: players,
+        initialPoints: parseInt(document.getElementById('points').value),
+        points: parseInt(document.getElementById('points').value),
+        legs: parseInt(document.getElementById('legs').value),
+        out: document.getElementById('out').value,
+        rules: document.getElementById('rules').value
     };
 
     console.log('Ausgewählte Optionen:', selectedOptions);

@@ -4,12 +4,22 @@ document.addEventListener('DOMContentLoaded', () => {
     let tripleMode = false;
     let throws = 0;
     let totalPoints = 0;
+    let currentPlayerIndex = 0;
+    let isLocked = false; // Variable to lock the throw inputs
 
     const restScoreElement = document.querySelector('.restScore');
     const calculatedPointsElement = document.querySelector('.calculatedPoints');
     const firstThrowElement = document.querySelector('.firstThrow');
     const secondThrowElement = document.querySelector('.secondThrow');
     const thirdThrowElement = document.querySelector('.thirdThrow');
+    const currentPlayerElement = document.querySelector('.currentPlayer');
+
+    // Initialisieren der Spielerinformationen
+    selectedOptions.players = selectedOptions.players.map(player => ({
+        name: player,
+        points: selectedOptions.initialPoints,
+        legs: selectedOptions.legs,
+    }));
 
     document.getElementById('scoreboardForm').addEventListener('submit', handleFormSubmission);
 
@@ -18,11 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function throwHandler() {
-        if (throws === 3) {
-            throws = 0; // Reset throws to 0 so that the next increment starts from 1
-            totalPoints = 0; // Reset total points after the third throw
-            clearThrowsDisplay();
-            updateRestScore(); // Update the display to show the reset points
+        if (throws === 2) {
+            isLocked = true; // Lock the input
+            setTimeout(() => {
+                throws = 0; // Reset throws to 0 so that the next increment starts from 1
+                totalPoints = 0; // Reset total points after the third throw
+                clearThrowsDisplay();
+                switchPlayer();
+                isLocked = false; // Unlock the input for the next player
+            }, 3000);
         }
         throws++;
     }
@@ -43,37 +57,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function updateLegs() {
-        const winAudio = document.getElementById('winSound')
-        selectedOptions.legs --
+    function switchPlayer() {
+        currentPlayerIndex = (currentPlayerIndex + 1) % selectedOptions.players.length;
+        updateRestScore();
+        updateCurrentPlayerDisplay();
+    }
 
-        if (selectedOptions.legs === 0){
-            winAudio.play()
+    function updateLegs() {
+        const winAudio = document.getElementById('winSound');
+        selectedOptions.players[currentPlayerIndex].legs--;
+
+        if (selectedOptions.players[currentPlayerIndex].legs === 0) {
+            winAudio.play();
             setTimeout(() => {
                 window.history.back();
-            }, 600); 
+            }, 600);
         } else {
-            totalPoints = 0
-            selectedOptions.points = selectedOptions.initialPoints
-            restScoreElement.innerHTML = `Rest: ${selectedOptions.points}`;
-            winAudio.play()
+            totalPoints = 0;
+            selectedOptions.players[currentPlayerIndex].points = selectedOptions.initialPoints;
+            restScoreElement.innerHTML = `Rest: ${selectedOptions.players[currentPlayerIndex].points}`;
+            winAudio.play();
         }
     }
 
     function updateRestScore() {
-        if (selectedOptions.points > 0) {
+        const currentPlayer = selectedOptions.players[currentPlayerIndex];
+        if (currentPlayer.points > 0) {
             calculatedPointsElement.innerHTML = `${totalPoints}`;
-            restScoreElement.innerHTML = `Rest: ${selectedOptions.points}`;
-        } else if (selectedOptions.points === 0) {
+            restScoreElement.innerHTML = `Rest: ${currentPlayer.points}`;
+        } else if (currentPlayer.points === 0) {
             restScoreElement.innerHTML = ``;
             clearThrowsDisplay();
-            console.log(selectedOptions)
-            updateLegs()
-            calculatedPointsElement.innerHTML = ''
+            updateLegs();
+            calculatedPointsElement.innerHTML = '';
         }
     }
 
-    window.changeMode = function(mode) { // Globally expose changeMode
+    function updateCurrentPlayerDisplay() {
+        const currentPlayer = selectedOptions.players[currentPlayerIndex];
+        currentPlayerElement.innerHTML = `Current Player: ${currentPlayer.name}`;
+    }
+
+    window.changeMode = function (mode) { // Globally expose changeMode
         if (mode === 'D') {
             doubleMode = true;
             tripleMode = false;
@@ -83,8 +108,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    window.calculatePoints = function(points) { // Globally expose calculatePoints
+    window.calculatePoints = function (points) { // Globally expose calculatePoints
+        if (isLocked) return; // Prevent input if locked
+
         let modifiedPoints = points;
+        const currentPlayer = selectedOptions.players[currentPlayerIndex];
 
         if (doubleMode) {
             modifiedPoints *= 2;
@@ -92,94 +120,85 @@ document.addEventListener('DOMContentLoaded', () => {
             modifiedPoints *= 3;
         }
 
-        if (selectedOptions.points - modifiedPoints > 1) {
+        if (currentPlayer.points - modifiedPoints > 1) {
             throwHandler();
             totalPoints += modifiedPoints;
-            selectedOptions.points -= modifiedPoints;
+            currentPlayer.points -= modifiedPoints;
             localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
-            
+
             updateThrowsDisplay(modifiedPoints);
             updateRestScore();
             doubleMode = false;
             tripleMode = false;
-            console.log(selectedOptions)
-        } else if (selectedOptions.points - modifiedPoints === 0 && selectedOptions.out === 'singleOut') {
+        } else if (currentPlayer.points - modifiedPoints === 0 && selectedOptions.out === 'singleOut') {
             throwHandler();
             totalPoints += modifiedPoints;
-            selectedOptions.points -= modifiedPoints;
+            currentPlayer.points -= modifiedPoints;
             localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
-            
+
             updateThrowsDisplay(modifiedPoints);
             updateRestScore();
             doubleMode = false;
             tripleMode = false;
-            console.log(selectedOptions)
-        } else if (selectedOptions.points - modifiedPoints === 0 && selectedOptions.out === 'doubleOut') {
-            if(doubleMode){
+        } else if (currentPlayer.points - modifiedPoints === 0 && selectedOptions.out === 'doubleOut') {
+            if (doubleMode) {
                 throwHandler();
                 totalPoints += modifiedPoints;
-                selectedOptions.points -= modifiedPoints;
+                currentPlayer.points -= modifiedPoints;
                 localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
-                
+
                 updateThrowsDisplay(modifiedPoints);
                 updateRestScore();
                 doubleMode = false;
                 tripleMode = false;
-                console.log(selectedOptions)
-            }
-            else {
-                points = 0
+            } else {
+                modifiedPoints = 0;
                 console.log('überworfen');
-                const audio = document.getElementById('überworfenSound')
-                audio.play()
-                throwHandler()
-                selectedOptions.points -= 0;
-                updateThrowsDisplay(points);
-                updateRestScore();
-                doubleMode = false;
-                tripleMode = false;
-            }
-        }
-        else if (selectedOptions.points - modifiedPoints === 0 && selectedOptions.out === 'masterOut') {
-            if(tripleMode){
+                const audio = document.getElementById('überworfenSound');
+                audio.play();
                 throwHandler();
-                totalPoints += modifiedPoints;
-                selectedOptions.points -= modifiedPoints;
-                localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
-                
                 updateThrowsDisplay(modifiedPoints);
                 updateRestScore();
                 doubleMode = false;
                 tripleMode = false;
-                console.log(selectedOptions)
             }
-            else {
-                points = 0
+        } else if (currentPlayer.points - modifiedPoints === 0 && selectedOptions.out === 'masterOut') {
+            if (tripleMode) {
+                throwHandler();
+                totalPoints += modifiedPoints;
+                currentPlayer.points -= modifiedPoints;
+                localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions));
+
+                updateThrowsDisplay(modifiedPoints);
+                updateRestScore();
+                doubleMode = false;
+                tripleMode = false;
+            } else {
+                modifiedPoints = 0;
                 console.log('überworfen');
-                const audio = document.getElementById('überworfenSound')
-                audio.play()
-                throwHandler()
-                selectedOptions.points -= 0;
-                updateThrowsDisplay(points);
+                const audio = document.getElementById('überworfenSound');
+                audio.play();
+                throwHandler();
+                updateThrowsDisplay(modifiedPoints);
                 updateRestScore();
                 doubleMode = false;
                 tripleMode = false;
             }
         } else {
-            points = 0
+            modifiedPoints = 0;
             console.log('überworfen');
-            const audio = document.getElementById('überworfenSound')
-            audio.play()
-            throwHandler()
-            selectedOptions.points -= 0;
-            updateThrowsDisplay(points);
+            const audio = document.getElementById('überworfenSound');
+            audio.play();
+            throwHandler();
+            updateThrowsDisplay(modifiedPoints);
             updateRestScore();
             doubleMode = false;
             tripleMode = false;
         }
     };
 
-    restScoreElement.innerHTML = `Rest: ${selectedOptions.points}`;
+    updateRestScore();
+    updateCurrentPlayerDisplay(); // Initiales Update des aktuellen Spielers
 
     document.querySelectorAll('.calculator button').forEach(button => {
         button.addEventListener('click', (event) => {
